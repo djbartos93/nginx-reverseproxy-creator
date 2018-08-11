@@ -1,6 +1,13 @@
-# Nginx ReverseProxy Creator
+# A Fork of Nginx ReverseProxy Creator by bilyboy785
 ![NginxLogo](https://www.nginx.com/resources/wiki/_static/img/logo.png)
 
+# Updates/changes
+* Changed from apt-get to yum for use on centos
+* you can now enter your IP:port rather than just a port!
+* changed service nginx stop/start to systemctl 
+
+
+## Original Documentation follows
 Just a little script to create Nginx reverse proxy with SSL support. Simply run the script with or without parameters and that's all !
 
 ## Installation
