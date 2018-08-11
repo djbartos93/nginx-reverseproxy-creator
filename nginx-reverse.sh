@@ -10,8 +10,8 @@ BWHITE='\e[1;37m'
 NC='\033[0m'
 NGINXCONFDIR='/etc/nginx/conf.d/'
 LEDIR='/opt/letsencrypt'
-TEMPLATE='https://raw.githubusercontent.com/bilyboy785/nginx-reverseproxy-creator/master/includes/proxy.template.conf'
-TEMPLATESSL='https://raw.githubusercontent.com/bilyboy785/nginx-reverseproxy-creator/master/includes/proxyssl.template.conf'
+TEMPLATE='https://raw.githubusercontent.com/djbartos93/nginx-reverseproxy-creator/master/includes/proxy.template.conf'
+TEMPLATESSL='https://raw.githubusercontent.com/djbartos93/nginx-reverseproxy-creator/master/includes/proxyssl.template.conf'
 DATE=`date +%d/%m/%Y-%H:%M:%S`
 BACKUPDATE=`date +%d-%m-%Y-%H-%M-%S`
 
@@ -41,7 +41,7 @@ case $1 in
 	"" )
 		MODE="manual"
 		DOMAIN=$(whiptail --title "Domain" --inputbox "Enter your domain or subdomain for this app" 7 65 3>&1 1>&2 2>&3)
-		PORT=$(whiptail --title "Port" --inputbox "Enter your app's port" 7 65 3>&1 1>&2 2>&3)
+		PORT=$(whiptail --title "Port" --inputbox "Enter your app's IP and Port (ex: 192.168.1.42:8080)" 7 65 3>&1 1>&2 2>&3)
 		if (whiptail --title "SSL" --yesno "Do you wan't to use SSL with Let's Encrypt ?" 7 90) then
 			EMAIL=$(whiptail --title "Email" --inputbox "Enter your email" 7 65 3>&1 1>&2 2>&3)
 			RSAKEYSIZE=$(whiptail --title "RSA Key Size" --inputbox "Enter RSA key size for Let'sEncrypt" 7 65 "2048" 3>&1 1>&2 2>&3)
@@ -55,13 +55,13 @@ esac
 echo ""
 echo -e "${BLUE}### Checking system ###${NC}"
 echo -e "${BWHITE}* Preparing system...${NC}"
-apt-get update  > /dev/null 2>&1
-apt-get install -y git locate curl > /dev/null 2>&1
+yum update  > /dev/null 2>&1
+yum install -y git locate curl > /dev/null 2>&1
 check_errors $?
 echo -e "${BWHITE}* Checking Nginx...${NC}"
 if [[ ! -d '/etc/nginx' ]]; then
 	echo -e "${GREEN}--> Nginx isn't installed, let's go !${NC}"
-	apt-get install -y nginx > /dev/null 2>&1
+	yum install -y nginx > /dev/null 2>&1
 	check_errors $?
 else
 	echo -e "	${YELLOW}--> Nginx detected !${NC}"
@@ -88,7 +88,7 @@ else
 		echo ""
 	fi
 	echo -e "${BWHITE}* Stopping Nginx service${NC}"
-	service nginx stop > /dev/null 2>&1
+	systemctl stop nginx > /dev/null 2>&1
 	check_errors $?
 	echo ""
 	if [[ "$USESSL" == "yes" ]]; then
@@ -115,7 +115,7 @@ else
 	if [[ "$?" == "0" ]]; then
 		echo -e "	${GREEN}--> Nginx file configuration test sucessful !${NC}"
 		echo -e "${BWHITE}* Restarting Nginx...${NC}"
-		service nginx start > /dev/null 2>&1
+		systemctl start nginx > /dev/null 2>&1
 		check_errors $?
 	else
 		echo -e "	${GREEN}--> Nginx file configuration test failed !${NC}"
